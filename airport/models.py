@@ -101,6 +101,9 @@ class Order(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return (
             f"Order #{self.id} by {self.user} "
