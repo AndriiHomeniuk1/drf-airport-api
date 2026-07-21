@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.db.models.constraints import UniqueConstraint
+from django.core.exceptions import ValidationError
 
 
 class CrewRole(models.TextChoices):
@@ -96,6 +97,54 @@ class Ticket(models.Model):
             )
         ]
         ordering = ("flight", "row", "seat")
+
+    @staticmethod
+    def validate_row(row: int, airplane_rows: int) -> None:
+        if not (1 <= row <= airplane_rows):
+            raise ValidationError(
+                {
+                    "row":(
+                        f"Row must be in range [1, {airplane_rows}], "
+                        f"not {row}."
+                    )
+                }
+            )
+
+    @staticmethod
+    def validate_seat(seat: int, seats_in_row: int) -> None:
+        if not (1 <= seat <= seats_in_row):
+            raise ValidationError(
+                {
+                    "seat": (
+                        f"Seat must be in range [1, {seats_in_row}], "
+                        f"not {seat}."
+                    )
+                }
+            )
+
+    def clean(self):
+        if self.flight_id is None:
+            return
+
+        airplane = self.flight.airplane
+
+        self.validate_row(self.row, airplane.rows)
+        self.validate_seat(self.seat, airplane.seats_in_row)
+
+    def save(
+        self,
+        force_insert = False,
+        force_update = False,
+        using = None,
+        update_fields = None,
+    ):
+        self.full_clean()
+        return super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
 
     def __str__(self):
         return (
