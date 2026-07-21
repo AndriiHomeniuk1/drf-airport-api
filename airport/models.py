@@ -46,6 +46,11 @@ class Route(models.Model):
     distance = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["source", "destination"])
+        ]
+
     def __str__(self):
         return (
             f"{self.source.name} → {self.destination.name} "
@@ -72,6 +77,11 @@ class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(Crew, related_name="flights", blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["departure_time"])
+        ]
 
     def __str__(self):
         return (
