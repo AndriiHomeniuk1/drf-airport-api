@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.constraints import UniqueConstraint
 
 
 class CrewRole(models.TextChoices):
@@ -86,6 +87,15 @@ class Ticket(models.Model):
         Flight, on_delete=models.CASCADE, related_name="tickets")
     order = models.ForeignKey(
         "Order", on_delete=models.CASCADE, related_name="tickets")
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["flight", "row", "seat"],
+                name="unique_seat_per_flight"
+            )
+        ]
+        ordering = ("flight", "row", "seat")
 
     def __str__(self):
         return (
