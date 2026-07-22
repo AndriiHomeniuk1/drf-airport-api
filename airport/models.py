@@ -42,6 +42,7 @@ class Airplane(models.Model):
                 name="check_airplane_seats_in_row_gt_0"
             )
         ]
+        ordering = ("name",)
 
     def __str__(self):
         return f"{self.name} ({self.airplane_type.name})"
@@ -51,6 +52,9 @@ class Airport(models.Model):
     name = models.CharField(max_length=64, unique=True)
     closest_big_city = models.CharField(max_length=64)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ("name",)
 
     def __str__(self):
         return f"{self.name} ({self.closest_big_city})"
@@ -87,6 +91,9 @@ class Crew(models.Model):
     last_name = models.CharField(max_length=64)
     role = models.CharField(max_length=32, choices=CrewRole.choices)
 
+    class Meta:
+        ordering = ("last_name", "first_name")
+
     def __str__(self):
         return (
             f"{self.first_name} {self.last_name} ({self.get_role_display()})"
@@ -106,6 +113,7 @@ class Flight(models.Model):
         indexes = [
             models.Index(fields=["departure_time"])
         ]
+        ordering = ("departure_time",)
 
     def __str__(self):
         return (
