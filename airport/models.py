@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F
 from django.db.models.constraints import UniqueConstraint
 
 
@@ -112,6 +112,12 @@ class Flight(models.Model):
     crew = models.ManyToManyField(Crew, related_name="flights", blank=True)
 
     class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(arrival_time__gt=F("departure_time")),
+                name="check_arrival_after_departure"
+            )
+        ]
         indexes = [
             models.Index(fields=["departure_time"])
         ]
