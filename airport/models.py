@@ -1,9 +1,11 @@
-from django.db import models
+from datetime import datetime
+
 from django.conf import settings
-from django.db.models.constraints import UniqueConstraint
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db import models
 from django.db.models import Q
+from django.db.models.constraints import UniqueConstraint
 
 
 class CrewRole(models.TextChoices):
@@ -114,6 +116,37 @@ class Flight(models.Model):
             models.Index(fields=["departure_time"])
         ]
         ordering = ("departure_time",)
+
+    @staticmethod
+    def validate_time(
+        departure_time: datetime,
+        arrival_time: datetime
+    ) -> None:
+        if arrival_time <= departure_time:
+            raise ValidationError(
+                {
+                    "arrival_time":
+                        "Arrival time must be later than departure time."
+                }
+            )
+
+    def clean(self):
+        self.validate_time(self.departure_time, self.arrival_time)
+
+    def save(
+        self,
+        force_insert = False,
+        force_update = False,
+        using = None,
+        update_fields = None,
+    ):
+        self.full_clean()
+        return super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
 
     def __str__(self):
         return (
