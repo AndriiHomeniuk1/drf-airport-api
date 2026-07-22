@@ -61,12 +61,18 @@ class Route(models.Model):
         Airport, on_delete=models.PROTECT, related_name="source_routes")
     destination = models.ForeignKey(
         Airport, on_delete=models.PROTECT, related_name="destination_routes")
-    distance = models.IntegerField()
+    distance = models.IntegerField(validators=[MinValueValidator(1)])
     is_active = models.BooleanField(default=True)
 
     class Meta:
         indexes = [
             models.Index(fields=["source", "destination"])
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(distance__gt=0),
+                name="check_route_distance_gt_0"
+            )
         ]
 
     def __str__(self):
