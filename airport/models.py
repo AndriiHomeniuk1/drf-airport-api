@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.db.models.constraints import UniqueConstraint
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+from django.db.models import Q
 
 
 class CrewRole(models.TextChoices):
@@ -19,11 +21,27 @@ class AirplaneType(models.Model):
 
 class Airplane(models.Model):
     name = models.CharField(max_length=64, unique=True)
-    rows = models.IntegerField()
-    seats_in_row = models.IntegerField()
+    rows = models.IntegerField(
+        validators=[MinValueValidator(1)]
+    )
+    seats_in_row = models.IntegerField(
+        validators=[MinValueValidator(1)]
+    )
     airplane_type = models.ForeignKey(
         AirplaneType, on_delete=models.PROTECT, related_name="airplanes")
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(rows__gt=0),
+                name="check_airplane_rows_gt_0"
+            ),
+            models.CheckConstraint(
+                condition=Q(seats_in_row__gt=0),
+                name="check_airplane_seats_in_row_gt_0"
+            )
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.airplane_type.name})"
