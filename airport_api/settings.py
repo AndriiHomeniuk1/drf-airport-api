@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     "airport",
+    "user",
 ]
+
+AUTH_USER_MODEL = "user.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
