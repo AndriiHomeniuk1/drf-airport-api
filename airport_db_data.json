@@ -698,5 +698,267 @@
       "date_joined": "2026-07-21T12:15:00Z",
       "email": "sophia.taylor@example.com"
     }
+  },
+  {
+    "model": "airport.order",
+    "pk": 1,
+    "fields": {
+      "created_at": "2026-01-05T10:15:00Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 1,
+    "fields": {
+      "row": 5,
+      "seat": 2,
+      "flight": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 2,
+    "fields": {
+      "row": 5,
+      "seat": 3,
+      "flight": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 2,
+    "fields": {
+      "created_at": "2026-01-18T16:40:00Z",
+      "user": 2
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 3,
+    "fields": {
+      "row": 18,
+      "seat": 6,
+      "flight": 2,
+      "order": 2
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 3,
+    "fields": {
+      "created_at": "2026-02-11T09:20:00Z",
+      "user": 3
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 4,
+    "fields": {
+      "row": 12,
+      "seat": 4,
+      "flight": 3,
+      "order": 3
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 5,
+    "fields": {
+      "row": 12,
+      "seat": 5,
+      "flight": 3,
+      "order": 3
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 6,
+    "fields": {
+      "row": 12,
+      "seat": 6,
+      "flight": 3,
+      "order": 3
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 4,
+    "fields": {
+      "created_at": "2026-03-07T13:50:00Z",
+      "user": 4
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 7,
+    "fields": {
+      "row": 8,
+      "seat": 1,
+      "flight": 4,
+      "order": 4
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 8,
+    "fields": {
+      "row": 8,
+      "seat": 2,
+      "flight": 4,
+      "order": 4
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 5,
+    "fields": {
+      "created_at": "2026-04-22T08:30:00Z",
+      "user": 5
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 9,
+    "fields": {
+      "row": 21,
+      "seat": 7,
+      "flight": 5,
+      "order": 5
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 6,
+    "fields": {
+      "created_at": "2026-06-14T11:05:00Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 10,
+    "fields": {
+      "row": 3,
+      "seat": 2,
+      "flight": 9,
+      "order": 6
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 11,
+    "fields": {
+      "row": 3,
+      "seat": 3,
+      "flight": 9,
+      "order": 6
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 7,
+    "fields": {
+      "created_at": "2026-08-03T15:10:00Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 12,
+    "fields": {
+      "row": 10,
+      "seat": 1,
+      "flight": 12,
+      "order": 7
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 13,
+    "fields": {
+      "row": 10,
+      "seat": 2,
+      "flight": 12,
+      "order": 7
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 14,
+    "fields": {
+      "row": 10,
+      "seat": 3,
+      "flight": 12,
+      "order": 7
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 8,
+    "fields": {
+      "created_at": "2026-10-09T18:45:00Z",
+      "user": 2
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 15,
+    "fields": {
+      "row": 17,
+      "seat": 4,
+      "flight": 15,
+      "order": 8
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 16,
+    "fields": {
+      "row": 17,
+      "seat": 5,
+      "flight": 15,
+      "order": 8
+    }
+  },
+  {
+    "model": "airport.order",
+    "pk": 9,
+    "fields": {
+      "created_at": "2026-11-27T12:25:00Z",
+      "user": 2
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 17,
+    "fields": {
+      "row": 22,
+      "seat": 5,
+      "flight": 7,
+      "order": 9
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 18,
+      "fields": {
+      "row": 22,
+      "seat": 6,
+      "flight": 7,
+      "order": 9
+    }
+  },
+  {
+    "model": "airport.ticket",
+    "pk": 19,
+    "fields": {
+      "row": 22,
+      "seat": 7,
+      "flight": 7,
+      "order": 9
+    }
   }
 ]
