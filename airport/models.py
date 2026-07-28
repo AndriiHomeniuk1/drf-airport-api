@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Type
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -126,10 +127,11 @@ class Flight(models.Model):
     @staticmethod
     def validate_time(
         departure_time: datetime,
-        arrival_time: datetime
+        arrival_time: datetime,
+        error_to_raise: Type[Exception] = ValidationError
     ) -> None:
         if arrival_time <= departure_time:
-            raise ValidationError(
+            raise error_to_raise(
                 {
                     "arrival_time":
                         "Arrival time must be later than departure time."
