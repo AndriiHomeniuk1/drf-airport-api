@@ -182,9 +182,13 @@ class Ticket(models.Model):
         ordering = ("flight", "row", "seat")
 
     @staticmethod
-    def validate_row(row: int, airplane_rows: int) -> None:
+    def validate_row(
+        row: int,
+        airplane_rows: int,
+        error_to_raise: Type[Exception] = ValidationError
+    ) -> None:
         if not (1 <= row <= airplane_rows):
-            raise ValidationError(
+            raise error_to_raise(
                 {
                     "row":(
                         f"Row must be in range [1, {airplane_rows}], "
@@ -194,9 +198,13 @@ class Ticket(models.Model):
             )
 
     @staticmethod
-    def validate_seat(seat: int, seats_in_row: int) -> None:
+    def validate_seat(
+        seat: int,
+        seats_in_row: int,
+        error_to_raise: Type[Exception] = ValidationError
+    ) -> None:
         if not (1 <= seat <= seats_in_row):
-            raise ValidationError(
+            raise error_to_raise(
                 {
                     "seat": (
                         f"Seat must be in range [1, {seats_in_row}], "
