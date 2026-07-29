@@ -20,6 +20,8 @@ class AirplaneTypeSerializer(serializers.ModelSerializer):
 
 
 class AirplaneSerializer(serializers.ModelSerializer):
+    is_active = serializers.BooleanField(required=False, default=True)
+
     class Meta:
         model = Airplane
         fields = (
@@ -33,12 +35,16 @@ class AirplaneSerializer(serializers.ModelSerializer):
 
 
 class AirportSerializer(serializers.ModelSerializer):
+    is_active = serializers.BooleanField(required=False, default=True)
+
     class Meta:
         model = Airport
         fields = ("id", "name", "closest_big_city", "is_active")
 
 
 class RouteSerializer(serializers.ModelSerializer):
+    is_active = serializers.BooleanField(required=False, default=True)
+
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance", "is_active")
