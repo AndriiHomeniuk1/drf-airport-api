@@ -56,3 +56,12 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         airplane.save(update_fields=["is_active"])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AirportViewSet(viewsets.ModelViewSet):
+    queryset = Airport.objects
+    serializer_class = AirportSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(is_active=True)
+        return queryset.order_by("id")
