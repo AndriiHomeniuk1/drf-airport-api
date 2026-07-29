@@ -34,6 +34,18 @@ class AirplaneSerializer(serializers.ModelSerializer):
         )
 
 
+class AirplaneListSerializer(AirplaneSerializer):
+    airplane_type = serializers.CharField(
+        source="airplane_type.name",
+        read_only=True
+    )
+
+
+class AirplaneRetrieveSerializer(AirplaneSerializer):
+    airplane_type = AirplaneTypeSerializer(read_only=True)
+
+
+
 class AirportSerializer(serializers.ModelSerializer):
     is_active = serializers.BooleanField(required=False, default=True)
 
