@@ -58,6 +58,16 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
 
+class RouteListSerializer(RouteSerializer):
+    source = serializers.CharField(source="source.name", read_only=True)
+    destination = serializers.CharField(source="destination.name", read_only=True)
+
+
+class RouteRetrieveSerializer(RouteSerializer):
+    source = AirportSerializer(read_only=True)
+    destination = AirportSerializer(read_only=True)
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
