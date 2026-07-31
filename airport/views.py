@@ -96,3 +96,8 @@ class RouteViewSet(viewsets.ModelViewSet):
         route.save(update_fields=["is_active"])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CrewViewSet(viewsets.ModelViewSet):
+    queryset = Crew.objects.all()
+    serializer_class = CrewSerializer
