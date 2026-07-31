@@ -19,6 +19,8 @@ from airport.serializers import (
     AirplaneRetrieveSerializer,
     AirportSerializer,
     RouteSerializer,
+    RouteListSerializer,
+    RouteRetrieveSerializer,
     CrewSerializer,
     FlightSerializer,
     OrderSerializer,
@@ -65,3 +67,32 @@ class AirportViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(is_active=True)
         return queryset.order_by("id")
+
+
+class RouteViewSet(viewsets.ModelViewSet):
+    queryset = Route.objects
+    serializer_class = RouteSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return RouteListSerializer
+
+        if self.action == "retrieve":
+            return RouteRetrieveSerializer
+
+        return self.serializer_class
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(is_active=True)
+
+        if self.action in ("list", "retrieve"):
+            queryset = queryset.select_related()
+
+        return queryset.order_by("id")
+
+    def destroy(self, request, *args, **kwargs):
+        route = self.get_object()
+        route.is_active = False
+        route.save(update_fields=["is_active"])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
