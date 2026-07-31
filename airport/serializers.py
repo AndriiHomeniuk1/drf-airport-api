@@ -74,6 +74,10 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name", "role")
 
 
+class CrewListSerializer(CrewSerializer):
+    role = serializers.CharField(source="get_role_display", read_only=True)
+
+
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
@@ -93,6 +97,27 @@ class FlightSerializer(serializers.ModelSerializer):
             serializers.ValidationError
         )
         return attrs
+
+
+class FlightListSerializer(serializers.ModelSerializer):
+    route = serializers.StringRelatedField()
+    airplane = serializers.CharField(source="airplane.name", read_only=True)
+
+    class Meta:
+        model = Flight
+        fields = (
+            "id",
+            "route",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+        )
+
+
+class FlightRetrieveSerializer(FlightSerializer):
+    route = RouteRetrieveSerializer(read_only=True)
+    airplane = AirplaneRetrieveSerializer(read_only=True)
+    crew = CrewListSerializer(many=True, read_only=True)
 
 
 class TicketSerializer(serializers.ModelSerializer):
