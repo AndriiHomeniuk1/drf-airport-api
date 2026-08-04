@@ -80,10 +80,14 @@ class CrewListSerializer(CrewSerializer):
 
 class FlightSerializer(serializers.ModelSerializer):
     route = serializers.PrimaryKeyRelatedField(
-        queryset=Route.objects.select_related("source", "destination")
+        queryset=Route.objects.filter(
+            is_active=True
+        ).select_related("source", "destination")
     )
     airplane = serializers.PrimaryKeyRelatedField(
-        queryset=Airplane.objects.select_related("airplane_type")
+        queryset=Airplane.objects.filter(
+            is_active=True
+        ).select_related("airplane_type")
     )
 
     class Meta:
