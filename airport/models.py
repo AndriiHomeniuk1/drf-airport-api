@@ -84,6 +84,25 @@ class Route(models.Model):
             )
         ]
 
+    def clean(self):
+        validate_is_active("source", self.source)
+        validate_is_active("destination", self.destination)
+
+    def save(
+        self,
+        force_insert = False,
+        force_update = False,
+        using = None,
+        update_fields = None,
+    ):
+        self.full_clean()
+        return super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
+
     def __str__(self):
         return (
             f"{self.source.name} → {self.destination.name} "
