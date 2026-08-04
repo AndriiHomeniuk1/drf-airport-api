@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from airport.validators import validate_is_active
 from airport.models import (
     AirplaneType,
     Airplane,
@@ -107,12 +108,12 @@ class FlightSerializer(serializers.ModelSerializer):
             attrs["arrival_time"],
             serializers.ValidationError
         )
-        Flight.validate_is_active(
+        validate_is_active(
             "route",
             attrs["route"],
             serializers.ValidationError
         )
-        Flight.validate_is_active(
+        validate_is_active(
             "airplane",
             attrs["airplane"],
             serializers.ValidationError
