@@ -53,10 +53,29 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
+    source = serializers.PrimaryKeyRelatedField(
+        queryset=Airport.objects.filter(is_active=True)
+    )
+    destination = serializers.PrimaryKeyRelatedField(
+        queryset=Airport.objects.filter(is_active=True)
+    )
 
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance")
+
+    def validate(self, attrs):
+        validate_is_active(
+            "source",
+            attrs["source"],
+            serializers.ValidationError
+        )
+        validate_is_active(
+            "destination",
+            attrs["destination"],
+            serializers.ValidationError
+        )
+        return attrs
 
 
 class RouteListSerializer(RouteSerializer):
