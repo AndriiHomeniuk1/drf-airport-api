@@ -103,6 +103,16 @@ class FlightSerializer(serializers.ModelSerializer):
             attrs["arrival_time"],
             serializers.ValidationError
         )
+        Flight.validate_is_active(
+            "route",
+            attrs["route"],
+            serializers.ValidationError
+        )
+        Flight.validate_is_active(
+            "airplane",
+            attrs["airplane"],
+            serializers.ValidationError
+        )
         return attrs
 
 

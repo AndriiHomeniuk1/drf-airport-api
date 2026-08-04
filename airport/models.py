@@ -138,8 +138,26 @@ class Flight(models.Model):
                 }
             )
 
+    @staticmethod
+    def validate_is_active(
+        field_name: str,
+        instance: models.Model,
+        error_to_raise: Type[Exception] = ValidationError
+    ) -> None:
+        if not instance.is_active:
+            raise error_to_raise(
+                {
+                    field_name: (
+                        f"{instance.__class__.__name__} "
+                        f"\"{instance}\" is no longer active."
+                    )
+                }
+            )
+
     def clean(self):
         self.validate_time(self.departure_time, self.arrival_time)
+        self.validate_is_active("route", self.route)
+        self.validate_is_active("airplane", self.airplane)
 
     def save(
         self,
