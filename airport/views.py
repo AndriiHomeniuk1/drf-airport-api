@@ -109,3 +109,35 @@ class CrewViewSet(viewsets.ModelViewSet):
         if self.action in ("list", "retrieve"):
             return CrewListSerializer
         return self.serializer_class
+
+
+class FlightViewSet(viewsets.ModelViewSet):
+    queryset = Flight.objects
+    serializer_class = FlightSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FlightListSerializer
+
+        if self.action == "retrieve":
+            return FlightRetrieveSerializer
+
+        return self.serializer_class
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action == "list":
+            queryset = queryset.select_related(
+                "route__source",
+                "route__destination",
+                "airplane",
+            )
+        if self.action == "retrieve":
+            queryset = queryset.select_related(
+                "route__source",
+                "route__destination",
+                "airplane__airplane_type",
+            ).prefetch_related("crew")
+
+        return queryset
