@@ -22,7 +22,10 @@ from airport.serializers import (
     RouteListSerializer,
     RouteRetrieveSerializer,
     CrewSerializer,
+    CrewListSerializer,
     FlightSerializer,
+    FlightListSerializer,
+    FlightRetrieveSerializer,
     OrderSerializer,
 )
 
@@ -101,3 +104,8 @@ class RouteViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
+
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return CrewListSerializer
+        return self.serializer_class
