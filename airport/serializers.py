@@ -180,6 +180,14 @@ class TicketSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class TicketListSerializer(TicketSerializer):
+    flight = FlightListSerializer(read_only=True)
+
+
+class TicketRetrieveSerializer(TicketSerializer):
+    flight = FlightRetrieveSerializer(read_only=True)
+
+
 class OrderSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
 
@@ -196,3 +204,11 @@ class OrderSerializer(serializers.ModelSerializer):
                 Ticket.objects.create(order=order, **ticket_data)
 
             return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketListSerializer(read_only=True, many=True)
+
+
+class OrderRetrieveSerializer(OrderSerializer):
+    tickets = TicketRetrieveSerializer(read_only=True, many=True)
