@@ -162,6 +162,10 @@ class FlightRetrieveSerializer(FlightSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    flight = serializers.PrimaryKeyRelatedField(
+        queryset=Flight.objects.select_related("airplane")
+    )
+
     class Meta:
         model = Ticket
         fields = ("id", "row", "seat", "flight")
