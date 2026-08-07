@@ -152,6 +152,21 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
 
+        if self.action == "list":
+            queryset = queryset.prefetch_related(
+                "tickets__flight__route__source",
+                "tickets__flight__route__destination",
+                "tickets__flight__airplane",
+            )
+
+        if self.action == "retrieve":
+            queryset = queryset.prefetch_related(
+                "tickets__flight__route__source",
+                "tickets__flight__route__destination",
+                "tickets__flight__airplane__airplane_type",
+                "tickets__flight__crew",
+            )
+
         return queryset
 
     def perform_create(self, serializer):
