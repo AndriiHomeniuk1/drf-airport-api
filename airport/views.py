@@ -104,13 +104,17 @@ class RouteViewSet(viewsets.ModelViewSet):
 
 
 class CrewViewSet(viewsets.ModelViewSet):
-    queryset = Crew.objects.all()
+    queryset = Crew.objects
     serializer_class = CrewSerializer
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
             return CrewListSerializer
         return self.serializer_class
+
+    def get_queryset(self):
+        queryset = self.queryset
+        return queryset.order_by("id")
 
 
 class FlightViewSet(viewsets.ModelViewSet):
