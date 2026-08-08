@@ -158,7 +158,11 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Airport API",
-    "DESCRIPTION": "RESTful API for managing airport operations.",
+    "DESCRIPTION": (
+        "RESTful API for managing airport operations. Authenticated users "
+        "have read-only access and can book tickets, while staff have "
+        "full read-write access to manage the underlying data."
+    ),
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
