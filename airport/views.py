@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from airport.models import (
     AirplaneType,
@@ -57,6 +58,14 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 
         return queryset.order_by("id")
 
+    @extend_schema(
+        description="Deactivate the airplane (soft delete).",
+        responses={
+            204: OpenApiResponse(
+                description="Airplane deactivated successfully."
+            )
+        }
+    )
     def destroy(self, request, *args, **kwargs):
         airplane = self.get_object()
         airplane.is_active = False
@@ -95,6 +104,14 @@ class RouteViewSet(viewsets.ModelViewSet):
 
         return queryset.order_by("id")
 
+    @extend_schema(
+        description="Deactivate the route (soft delete).",
+        responses={
+            204: OpenApiResponse(
+                description="Route deactivated successfully."
+            )
+        }
+    )
     def destroy(self, request, *args, **kwargs):
         route = self.get_object()
         route.is_active = False
