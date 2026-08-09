@@ -82,6 +82,21 @@ class AirportViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.filter(is_active=True)
         return queryset.order_by("id")
 
+    @extend_schema(
+        description="Deactivate the airport (soft delete).",
+        responses={
+            204: OpenApiResponse(
+                description="Airport deactivated successfully."
+            )
+        }
+    )
+    def destroy(self, request, *args, **kwargs):
+        airport = self.get_object()
+        airport.is_active = False
+        airport.save(update_fields=["is_active"])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects
