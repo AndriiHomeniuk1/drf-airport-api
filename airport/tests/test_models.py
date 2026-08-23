@@ -1,9 +1,10 @@
 from datetime import timedelta
 
-from django.utils import timezone
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.test import TestCase
-from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from airport.models import (
     AirplaneType,
@@ -16,6 +17,8 @@ from airport.models import (
     Order,
 )
 
+
+User = get_user_model()
 
 def sample_airplane_type(**params):
     defaults = {
@@ -95,6 +98,37 @@ def sample_flight(route=None, airplane=None, crew=None, **params):
     if crew:
         flight.crew.set(crew)
     return flight
+
+
+def sample_user(**params):
+    defaults = {
+        "email": "testuser@test.com",
+        "password": "testpass123"
+    }
+    defaults.update(params)
+    return User.objects.create_user(**defaults)
+
+
+def sample_order(user=None, **params):
+    if user is None:
+        user = sample_user()
+    return Order.objects.create(user=user, **params)
+
+
+def sample_ticket(flight=None, order=None, **params):
+    if flight is None:
+        flight = sample_flight()
+    if order is None:
+        order = sample_order()
+
+    defaults = {
+        "row": 1,
+        "seat": 1,
+        "flight": flight,
+        "order": order,
+    }
+    defaults.update(params)
+    return Ticket.objects.create(**defaults)
 
 
 class AirplaneTypeModelTest(TestCase):
@@ -242,3 +276,65 @@ class FlightModelTest(TestCase):
         )
         with self.assertRaises(ValidationError):
             flight.save()
+
+
+class OrderModelTest(TestCase):
+    def setUp(self) -> None:
+        self.user = sample_user()
+        self.order = sample_order(user=self.user)
+
+    def test_str_method(self):
+        expected = (
+            f"Order #{self.order.pk} by {self.user} "
+            f"on {self.order.created_at:%Y-%m-%d %H:%M}"
+        )
+        self.assertEqual(str(self.order), expected)
+
+
+class TicketModelTest(TestCase):
+    def setUp(self) -> None:
+        self.flight = sample_flight()
+        self.order = sample_order()
+        self.ticket = sample_ticket(flight=self.flight, order=self.order)
+
+    def test_str_method(self):
+        expected = (
+            f"{self.flight.route.source.name} "
+            f"→ {self.flight.route.destination.name} "
+            f"| {self.flight.departure_time:%Y-%m-%d %H:%M} "
+            f"| Row {self.ticket.row}, Seat {self.ticket.seat}"
+        )
+        self.assertEqual(str(self.ticket), expected)
+
+    def test_validate_row_out_of_range(self):
+        airplane = self.flight.airplane
+        with self.assertRaises(ValidationError):
+            Ticket.validate_row(airplane.rows + 1, airplane.rows)
+
+    def test_validate_seat_out_of_range(self):
+        airplane = self.flight.airplane
+        with self.assertRaises(ValidationError):
+            Ticket.validate_seat(
+                airplane.seats_in_row + 1,
+                airplane.seats_in_row
+            )
+
+    def test_clean_invalid_row(self):
+        ticket = Ticket(
+            row=self.flight.airplane.rows + 1,
+            seat=1,
+            flight=self.flight,
+            order=self.order,
+        )
+        with self.assertRaises(ValidationError):
+            ticket.clean()
+
+    def test_save_calls_full_clean(self):
+        ticket = Ticket(
+            row=self.flight.airplane.rows + 1,
+            seat=1,
+            flight=self.flight,
+            order=self.order,
+        )
+        with self.assertRaises(ValidationError):
+            ticket.save()
