@@ -1,9 +1,17 @@
-from django.test import TestCase
+from datetime import timedelta
 
-from airport.serializers import RouteSerializer
+from django.test import TestCase
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+
+from airport.serializers import RouteSerializer, FlightSerializer
 from airport.tests.test_models import (
     sample_airport,
     sample_route,
+    sample_airplane,
+    sample_airplane_type,
+    sample_flight,
+    sample_crew,
 )
 
 
@@ -58,3 +66,85 @@ class RouteSerializerTest(TestCase):
         self.assertEqual(serializer.data["source"], self.source.pk)
         self.assertEqual(serializer.data["destination"], self.destination.pk)
         self.assertEqual(serializer.data["distance"], 150)
+
+
+class FlightSerializerTest(TestCase):
+    def setUp(self) -> None:
+        self.route = sample_route()
+        self.airplane = sample_airplane()
+        self.departure = timezone.now()
+        self.arrival = self.departure + timedelta(hours=2)
+
+    def test_valid_flight_serializer(self):
+        data = {
+            "route": self.route.pk,
+            "airplane": self.airplane.pk,
+            "departure_time": self.departure,
+            "arrival_time": self.arrival,
+            "crew": []
+        }
+        serializer = FlightSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        flight = serializer.save()
+        self.assertEqual(flight.route, self.route)
+        self.assertEqual(flight.airplane, self.airplane)
+
+    def test_invalid_route(self):
+        inactive_route = sample_route(
+            source=sample_airport(name="Kiev"),
+            destination=sample_airport(name="Malmo"),
+            is_active=False
+        )
+        data = {
+            "route": inactive_route.pk,
+            "airplane": self.airplane.pk,
+            "departure_time": self.departure,
+            "arrival_time": self.arrival,
+            "crew": []
+        }
+        serializer = FlightSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("route", serializer.errors)
+
+    def test_invalid_airplane(self):
+        inactive_airplane = sample_airplane(
+            name="Inactive Airplane",
+            airplane_type=sample_airplane_type(name="test"),
+            is_active=False
+        )
+        data = {
+            "route": self.route.pk,
+            "airplane": inactive_airplane.pk,
+            "departure_time": self.departure,
+            "arrival_time": self.arrival,
+            "crew": []
+        }
+        serializer = FlightSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("airplane", serializer.errors)
+
+    def test_invalid_time(self):
+        data = {
+            "route": self.route.pk,
+            "airplane": self.airplane.pk,
+            "departure_time": self.departure,
+            "arrival_time": self.departure,
+            "crew": []
+        }
+        serializer = FlightSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("arrival_time", serializer.errors)
+
+    def test_serializer_representation(self):
+        flight = sample_flight(route=self.route, airplane=self.airplane)
+        serializer = FlightSerializer(flight)
+        self.assertEqual(serializer.data["route"], self.route.pk)
+        self.assertEqual(serializer.data["airplane"], self.airplane.pk)
+        self.assertEqual(
+            parse_datetime(serializer.data["departure_time"]),
+            flight.departure_time
+        )
+        self.assertEqual(
+            parse_datetime(serializer.data["arrival_time"]),
+            flight.arrival_time
+        )
