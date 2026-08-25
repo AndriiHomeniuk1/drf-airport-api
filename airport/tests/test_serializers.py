@@ -4,7 +4,11 @@ from django.test import TestCase
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-from airport.serializers import RouteSerializer, FlightSerializer
+from airport.serializers import (
+    RouteSerializer,
+    FlightSerializer,
+    TicketSerializer,
+)
 from airport.tests.test_models import (
     sample_airport,
     sample_route,
@@ -12,6 +16,8 @@ from airport.tests.test_models import (
     sample_airplane_type,
     sample_flight,
     sample_crew,
+    sample_ticket,
+    sample_order,
 )
 
 
@@ -148,3 +154,55 @@ class FlightSerializerTest(TestCase):
             parse_datetime(serializer.data["arrival_time"]),
             flight.arrival_time
         )
+
+
+class TicketSerializerTest(TestCase):
+    def setUp(self) -> None:
+        self.airplane = sample_airplane(rows=10, seats_in_row=6)
+        self.flight = sample_flight(airplane=self.airplane)
+        self.order = sample_order()
+
+    def test_valid_ticket_serializer(self):
+        data = {
+            "row": 5,
+            "seat": 3,
+            "flight": self.flight.pk,
+        }
+        serializer = TicketSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        ticket = serializer.save(order=self.order)
+        self.assertEqual(ticket.row, 5)
+        self.assertEqual(ticket.seat, 3)
+        self.assertEqual(ticket.flight, self.flight)
+
+    def test_invalid_row(self):
+        data = {
+            "row": 11,
+            "seat": 2,
+            "flight": self.flight.pk,
+        }
+        serializer = TicketSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("row", serializer.errors)
+
+    def test_invalid_seat(self):
+        data = {
+            "row": 2,
+            "seat": 7,
+            "flight": self.flight.pk
+        }
+        serializer = TicketSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("seat", serializer.errors)
+
+    def test_serializer_representation(self):
+        ticket = sample_ticket(
+            flight=self.flight,
+            order=self.order,
+            row=1,
+            seat=1
+        )
+        serializer = TicketSerializer(ticket)
+        self.assertEqual(serializer.data["row"], 1)
+        self.assertEqual(serializer.data["seat"], 1)
+        self.assertEqual(serializer.data["flight"], self.flight.pk)
