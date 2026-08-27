@@ -8,6 +8,7 @@ from airport.serializers import (
     RouteSerializer,
     FlightSerializer,
     TicketSerializer,
+    OrderSerializer,
 )
 from airport.tests.test_models import (
     sample_airport,
@@ -15,9 +16,9 @@ from airport.tests.test_models import (
     sample_airplane,
     sample_airplane_type,
     sample_flight,
-    sample_crew,
     sample_ticket,
     sample_order,
+    sample_user,
 )
 
 
@@ -206,3 +207,38 @@ class TicketSerializerTest(TestCase):
         self.assertEqual(serializer.data["row"], 1)
         self.assertEqual(serializer.data["seat"], 1)
         self.assertEqual(serializer.data["flight"], self.flight.pk)
+
+
+class OrderSerializerTest(TestCase):
+    def setUp(self) -> None:
+        self.user = sample_user()
+        self.airplane = sample_airplane(rows=10, seats_in_row=6)
+        self.flight = sample_flight(airplane=self.airplane)
+
+    def test_valid_order_serializer(self):
+        data = {
+            "tickets": [
+                {"row": 1, "seat": 1, "flight": self.flight.pk},
+                {"row": 2, "seat": 2, "flight": self.flight.pk},
+            ]
+        }
+        serializer = OrderSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        order = serializer.save(user=self.user)
+        self.assertEqual(order.tickets.count(), 2)
+        self.assertEqual(order.tickets.first().row, 1)
+
+    def test_no_tickets(self):
+        data = {"tickets": []}
+        serializer = OrderSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("tickets", serializer.errors)
+
+    def test_serializer_representation(self):
+        order = sample_order(user=self.user)
+        sample_ticket(flight=self.flight, order=order, row=3, seat=4)
+        serializer = OrderSerializer(order)
+        self.assertEqual(serializer.data["id"], order.id)
+        self.assertEqual(len(serializer.data["tickets"]), 1)
+        self.assertEqual(serializer.data["tickets"][0]["row"], 3)
+        self.assertEqual(serializer.data["tickets"][0]["seat"], 4)
