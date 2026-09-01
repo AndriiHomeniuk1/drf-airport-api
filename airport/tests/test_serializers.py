@@ -10,7 +10,7 @@ from airport.serializers import (
     TicketSerializer,
     OrderSerializer,
 )
-from airport.tests.test_models import (
+from airport.tests.factories import (
     sample_airport,
     sample_route,
     sample_airplane,
