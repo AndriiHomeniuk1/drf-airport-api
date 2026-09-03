@@ -194,14 +194,18 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = ("id", "row", "seat", "flight")
 
     def validate(self, attrs):
+        row = attrs.get("row", getattr(self.instance, "row", None))
+        seat = attrs.get("seat", getattr(self.instance, "seat", None))
+        flight = attrs.get("flight", getattr(self.instance, "flight", None))
+
         Ticket.validate_row(
-            attrs["row"],
-            attrs["flight"].airplane.rows,
+            row,
+            flight.airplane.rows,
             serializers.ValidationError
         )
         Ticket.validate_seat(
-            attrs["seat"],
-            attrs["flight"].airplane.seats_in_row,
+            seat,
+            flight.airplane.seats_in_row,
             serializers.ValidationError
         )
         return attrs
