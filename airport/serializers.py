@@ -65,14 +65,20 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
     def validate(self, attrs):
+        source = attrs.get("source") or getattr(self.instance, "source", None)
+        destination = (
+            attrs.get("destination")
+            or getattr(self.instance, "destination", None)
+        )
+
         validate_is_active(
             "source",
-            attrs["source"],
+            source,
             serializers.ValidationError
         )
         validate_is_active(
             "destination",
-            attrs["destination"],
+            destination,
             serializers.ValidationError
         )
         return attrs
@@ -80,7 +86,8 @@ class RouteSerializer(serializers.ModelSerializer):
 
 class RouteListSerializer(RouteSerializer):
     source = serializers.CharField(source="source.name", read_only=True)
-    destination = serializers.CharField(source="destination.name", read_only=True)
+    destination = serializers.CharField(
+        source="destination.name", read_only=True)
 
 
 class RouteRetrieveSerializer(RouteSerializer):
