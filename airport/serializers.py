@@ -65,6 +65,7 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
     def validate(self, attrs):
+        # Fall back to the existing instance value for partial updates (PATCH)
         source = attrs.get("source") or getattr(self.instance, "source", None)
         destination = (
             attrs.get("destination")
@@ -129,19 +130,34 @@ class FlightSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        # Fall back to the existing instance value for partial updates (PATCH)
+        departure_time = (
+            attrs.get("departure_time")
+            or getattr(self.instance, "departure_time", None)
+        )
+        arrival_time = (
+            attrs.get("arrival_time")
+            or getattr(self.instance, "arrival_time", None)
+        )
+        route = attrs.get("route") or getattr(self.instance, "route", None)
+        airplane = (
+            attrs.get("airplane")
+            or getattr(self.instance, "airplane", None)
+        )
+
         Flight.validate_time(
-            attrs["departure_time"],
-            attrs["arrival_time"],
+            departure_time,
+            arrival_time,
             serializers.ValidationError
         )
         validate_is_active(
             "route",
-            attrs["route"],
+            route,
             serializers.ValidationError
         )
         validate_is_active(
             "airplane",
-            attrs["airplane"],
+            airplane,
             serializers.ValidationError
         )
         return attrs
