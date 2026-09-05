@@ -6,6 +6,7 @@ from django.utils.dateparse import parse_datetime
 
 from airport.serializers import (
     RouteSerializer,
+    CrewListSerializer,
     FlightSerializer,
     TicketSerializer,
     OrderSerializer,
@@ -15,6 +16,7 @@ from airport.tests.factories import (
     sample_route,
     sample_airplane,
     sample_airplane_type,
+    sample_crew,
     sample_flight,
     sample_ticket,
     sample_order,
@@ -73,6 +75,13 @@ class RouteSerializerTest(TestCase):
         self.assertEqual(serializer.data["source"], self.source.pk)
         self.assertEqual(serializer.data["destination"], self.destination.pk)
         self.assertEqual(serializer.data["distance"], 150)
+
+
+class CrewListSerializerTest(TestCase):
+    def test_role_field_returns_human_readable_value(self):
+        crew = sample_crew(role="pilot")
+        serializer = CrewListSerializer(crew)
+        self.assertEqual(serializer.data["role"], "Pilot")
 
 
 class FlightSerializerTest(TestCase):
