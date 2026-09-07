@@ -1,7 +1,7 @@
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins, status
+from rest_framework.viewsets import GenericViewSet
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from airport.models import (
@@ -182,7 +182,13 @@ class FlightViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet,
+):
     queryset = Order.objects
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)
