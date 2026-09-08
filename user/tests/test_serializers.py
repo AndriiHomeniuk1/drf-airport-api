@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from user.serializers import UserSerializer
 
+
 User = get_user_model()
 
 
