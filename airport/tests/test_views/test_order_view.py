@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 
 from airport.models import Order
 from airport.tests.factories import (
@@ -19,7 +19,6 @@ def detail_url(order_id: int) -> str:
 
 class OrderViewSetTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user()
         self.client.force_authenticate(user=self.user)
         self.order = sample_order(user=self.user)
@@ -63,7 +62,6 @@ class OrderViewSetTest(APITestCase):
 
 class OrderViewSetAnonymousTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.order = sample_order()
         self.flight = sample_flight()
 
@@ -87,7 +85,6 @@ class OrderViewSetAnonymousTest(APITestCase):
 
 class OrderViewSetPermissionsTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user(is_staff=False)
         self.client.force_authenticate(user=self.user)
         self.order = sample_order(user=self.user)
@@ -132,7 +129,6 @@ class OrderViewSetPermissionsTest(APITestCase):
 
 class OrderViewSetAdminTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.admin = sample_user(is_staff=True)
         self.client.force_authenticate(user=self.admin)
         self.order = sample_order(user=self.admin)

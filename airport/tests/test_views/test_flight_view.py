@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 
 from airport.tests.factories import (
     sample_flight,
@@ -18,7 +18,6 @@ def detail_url(flight_id: int) -> str:
 
 class FlightViewSetTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user()
         self.client.force_authenticate(user=self.user)
         self.flight = sample_flight()
@@ -49,7 +48,6 @@ class FlightViewSetTest(APITestCase):
 
 class FlightViewSetAnonymousTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.flight = sample_flight()
 
     def test_list_unauthorized_for_anonymous(self):
@@ -63,7 +61,6 @@ class FlightViewSetAnonymousTest(APITestCase):
 
 class FlightViewSetPermissionsTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user(is_staff=False)
         self.client.force_authenticate(user=self.user)
         self.flight = sample_flight()
@@ -101,7 +98,6 @@ class FlightViewSetPermissionsTest(APITestCase):
 
 class FlightViewSetAdminTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.admin = sample_user(is_staff=True)
         self.client.force_authenticate(user=self.admin)
         self.flight = sample_flight()

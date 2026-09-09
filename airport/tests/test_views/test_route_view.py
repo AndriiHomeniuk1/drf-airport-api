@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 
 from airport.tests.factories import sample_route, sample_airport, sample_user
 
@@ -13,7 +13,6 @@ def detail_url(route_id: int) -> str:
 
 class RouteViewSetTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user()
         self.client.force_authenticate(user=self.user)
         self.route = sample_route()
@@ -44,7 +43,6 @@ class RouteViewSetTest(APITestCase):
 
 class RouteViewSetAnonymousTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.route = sample_route()
 
     def test_list_unauthorized_for_anonymous(self):
@@ -58,7 +56,6 @@ class RouteViewSetAnonymousTest(APITestCase):
 
 class RouteViewSetPermissionsTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.user = sample_user(is_staff=False)
         self.client.force_authenticate(user=self.user)
         self.route = sample_route()
@@ -92,7 +89,6 @@ class RouteViewSetPermissionsTest(APITestCase):
 
 class RouteViewSetAdminTest(APITestCase):
     def setUp(self) -> None:
-        self.client = APIClient()
         self.admin = sample_user(is_staff=True)
         self.client.force_authenticate(user=self.admin)
         self.route = sample_route()
