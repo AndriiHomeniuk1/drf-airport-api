@@ -44,7 +44,6 @@ class AirplaneRetrieveSerializer(AirplaneSerializer):
     airplane_type = AirplaneTypeSerializer(read_only=True)
 
 
-
 class AirportSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -128,7 +127,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         departure_time = attrs.get(
-            "departure_time",getattr(self.instance, "departure_time", None))
+            "departure_time", getattr(self.instance, "departure_time", None))
         arrival_time = attrs.get(
             "arrival_time", getattr(self.instance, "arrival_time", None))
         route = attrs.get("route", getattr(self.instance, "route", None))

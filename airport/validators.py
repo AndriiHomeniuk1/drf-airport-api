@@ -14,7 +14,7 @@ def validate_is_active(
             {
                 field_name: (
                     f"{instance.__class__.__name__} "
-                    f"\"{instance}\" is no longer active."
+                    f"'{instance}' is no longer active."
                 )
             }
         )
