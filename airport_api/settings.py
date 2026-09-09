@@ -26,7 +26,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-mcw=5f1gw8vvg29!0lqc)gt-(pus((da@n+zth=u57ocs5qd9z"
+SECRET_KEY = (
+    "django-insecure-mcw=5f1gw8vvg29!0lqc)gt-(pus((da@n+zth=u57ocs5qd9z"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,7 +36,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INTERNAL_IPS = [
-	"127.0.0.1",
+    "127.0.0.1",
 ]
 
 # Application definition
@@ -106,16 +108,25 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.NumericPasswordValidator"
+        ),
     },
 ]
 
@@ -140,8 +151,10 @@ STATIC_URL = "/static/"
 
 
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-        "PAGE_SIZE": 5,
+    "DEFAULT_PAGINATION_CLASS": (
+        "rest_framework.pagination.LimitOffsetPagination"
+    ),
+    "PAGE_SIZE": 5,
     "DEFAULT_PERMISSION_CLASSES": [
         "airport.permissions.IsAdminAllOrIsAuthenticatedReadOnly",
     ],
