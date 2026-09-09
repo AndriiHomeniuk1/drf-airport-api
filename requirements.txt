@@ -5,3 +5,4 @@ drf-spectacular==0.30.0
 django-environ==0.14.0
 psycopg==3.3.4
 psycopg-binary==3.3.4
+django-debug-toolbar==7.1.1
