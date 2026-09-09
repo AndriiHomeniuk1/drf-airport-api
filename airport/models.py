@@ -90,10 +90,10 @@ class Route(models.Model):
 
     def save(
         self,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
@@ -166,10 +166,10 @@ class Flight(models.Model):
 
     def save(
         self,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
@@ -213,7 +213,7 @@ class Ticket(models.Model):
         if not (1 <= row <= airplane_rows):
             raise error_to_raise(
                 {
-                    "row":(
+                    "row": (
                         f"Row must be in range [1, {airplane_rows}], "
                         f"not {row}."
                     )
@@ -247,10 +247,10 @@ class Ticket(models.Model):
 
     def save(
         self,
-        force_insert = False,
-        force_update = False,
-        using = None,
-        update_fields = None,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
     ):
         self.full_clean()
         return super().save(
